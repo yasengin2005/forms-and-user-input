@@ -6,17 +6,17 @@ const initialInputState = {
 };
 
 const inputStateReducer = (state, action) => {
-    if (action.type === "INPUT") {
-        return { value: action.value, isTouched: state.isTouched };
-    }
-    if (action.type === "BLUR") {
-        return { isTouched: true, value: state.value };
-    }
-    if (action.type === "RESET") {
-        return { isTouched: false, value: "" };
-    }
-    return inputStateReducer;
-};
+    switch (action.type) {
+        case "CHANGE":
+          return { value: action.value };
+        case "BLUR":
+          return { ...state, isTouched: true };
+        case "RESET":
+          return { value: "", isTouched: false };
+        default:
+          return inputStateReducer;
+      }
+    };
 
 const useInput = (validateValue) => {
     const [inputState, dispatch] = useReducer(
@@ -28,7 +28,7 @@ const useInput = (validateValue) => {
   const hasError = !valueIsValid && inputState.isTouched;
 
   const valueChangeHandler = (event) => {
-    dispatch({ type: "INPUT", value: event.target.value });
+    dispatch({ type: "CHANGE", value: event.target.value });
   };
 
   const inputBlurHandler = (event) => {
